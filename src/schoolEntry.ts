@@ -68,23 +68,26 @@ export function getCurrentAcademicYearStart(referenceDate: Date = new Date()): n
 }
 
 /**
- * First standard entry: Pre-nursery in the September of the calendar year
- * the child turns two. Each subsequent year group is one September later.
+ * Entry years are based on academic cohort, not calendar birth year alone.
+ * A cohort (1 Sept Y – 31 Aug Y+1) enters each stage together each September.
  */
-export function getFirstEntryYear(birthYear: number): number {
-  return birthYear + 2
+export function getFirstEntryYear(cohortStartYear: number): number {
+  return cohortStartYear + 3
 }
 
-export function getEntryYear(birthYear: number, yearGroupIndex: number): number {
-  return getFirstEntryYear(birthYear) + yearGroupIndex
+export function getEntryYear(
+  cohortStartYear: number,
+  yearGroupIndex: number,
+): number {
+  return getFirstEntryYear(cohortStartYear) + yearGroupIndex
 }
 
 export function buildEntryPoint(
-  birthYear: number,
+  cohortStartYear: number,
   yearGroupIndex: number,
 ): EntryPoint {
   const yearGroup = YEAR_GROUPS[yearGroupIndex]
-  const entryYear = getEntryYear(birthYear, yearGroupIndex)
+  const entryYear = getEntryYear(cohortStartYear, yearGroupIndex)
 
   return {
     yearGroup,
@@ -104,7 +107,7 @@ export function calculateSchoolEntry(
   const cohortEndYear = cohortStartYear + 1
 
   const allEntryPoints = YEAR_GROUPS.map((_, index) =>
-    buildEntryPoint(birthYear, index),
+    buildEntryPoint(cohortStartYear, index),
   )
 
   const firstPointOfEntry = allEntryPoints[0]

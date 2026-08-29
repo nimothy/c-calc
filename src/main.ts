@@ -25,8 +25,9 @@ app.innerHTML = `
       <label class="field-label" for="dob">Child&apos;s date of birth</label>
       <input id="dob" class="dob-input" type="date" />
       <p class="hint">
-        Example: a child born on 15 June 2020 would normally enter Pre-nursery in
-        September 2022, Nursery in September 2023, and Reception in September 2024.
+        Example: a child born on 29 August 2023 is in the 2022/23 cohort and enters
+        Nursery in September 2026. A child born on 29 September 2023 is in the
+        2023/24 cohort and enters Nursery in September 2027.
       </p>
     </section>
 

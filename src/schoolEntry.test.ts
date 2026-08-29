@@ -17,26 +17,45 @@ describe('getCohortStartYear', () => {
 })
 
 describe('school entry schedule', () => {
-  it('maps 31 August 2023 to pre-nursery, nursery, then reception', () => {
-    const result = calculateSchoolEntry(new Date(2023, 7, 31), new Date(2026, 7, 29))
+  it('puts 29 August and 29 September 2023 in different cohorts with different nursery years', () => {
+    const august = calculateSchoolEntry(new Date(2023, 7, 29), new Date(2026, 7, 29))
+    const september = calculateSchoolEntry(new Date(2023, 8, 29), new Date(2026, 7, 29))
 
-    expect(formatCohortRange(result.cohortStartYear)).toBe(
+    expect(august.cohortStartYear).toBe(2022)
+    expect(september.cohortStartYear).toBe(2023)
+
+    expect(formatCohortRange(august.cohortStartYear)).toBe(
       '1 September 2022 – 31 August 2023',
     )
+    expect(formatCohortRange(september.cohortStartYear)).toBe(
+      '1 September 2023 – 31 August 2024',
+    )
+
+    expect(getEntryYear(august.cohortStartYear, 1)).toBe(2026)
+    expect(getEntryYear(september.cohortStartYear, 1)).toBe(2027)
+
+    expect(august.nextPointOfEntry?.yearGroup).toBe('Nursery')
+    expect(august.nextPointOfEntry?.entryYear).toBe(2026)
+    expect(september.nextPointOfEntry?.yearGroup).toBe('Pre-nursery')
+    expect(september.nextPointOfEntry?.entryYear).toBe(2026)
+  })
+
+  it('maps 31 August 2023 through pre-nursery, nursery, then reception', () => {
+    const result = calculateSchoolEntry(new Date(2023, 7, 31), new Date(2026, 7, 29))
+
+    expect(result.cohortStartYear).toBe(2022)
     expect(result.firstPointOfEntry.yearGroup).toBe('Pre-nursery')
     expect(result.firstPointOfEntry.entryYear).toBe(2025)
-    expect(getEntryYear(2023, 1)).toBe(2026)
-    expect(getEntryYear(2023, 2)).toBe(2027)
-    expect(result.nextPointOfEntry?.yearGroup).toBe('Nursery')
-    expect(result.nextPointOfEntry?.entryYear).toBe(2026)
+    expect(getEntryYear(result.cohortStartYear, 1)).toBe(2026)
+    expect(getEntryYear(result.cohortStartYear, 2)).toBe(2027)
   })
 
   it('places a June 2016 birth across the full schedule through Year 8', () => {
     const result = calculateSchoolEntry(new Date(2016, 5, 15), new Date(2026, 0, 1))
 
     expect(result.cohortStartYear).toBe(2015)
-    expect(getEntryYear(2016, 0)).toBe(2018)
-    expect(getEntryYear(2016, 2)).toBe(2020)
+    expect(getEntryYear(result.cohortStartYear, 0)).toBe(2018)
+    expect(getEntryYear(result.cohortStartYear, 2)).toBe(2020)
     expect(result.allEntryPoints[10].yearGroup).toBe('Year 8')
     expect(result.allEntryPoints[10].entryYear).toBe(2028)
   })
