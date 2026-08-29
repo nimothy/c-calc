@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 
-// GitHub Pages project sites are served from /repo-name/
+// Override with VITE_BASE_PATH for PR previews, e.g. /c-calc/preview/pr-1/
 export default defineConfig({
-  base: '/c-calc/',
+  base: process.env.VITE_BASE_PATH || '/c-calc/',
 })

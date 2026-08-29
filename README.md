@@ -37,13 +37,25 @@ The production build is written to `dist/` and can be hosted on any static file 
 
 Yes — this app works on GitHub Pages. The Vite config uses `base: '/c-calc/'` so assets load correctly from a project site URL like `https://nimothy.github.io/c-calc/`.
 
-After merging to `main`:
+### One-time setup
 
 1. Open the repo **Settings → Pages**
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**
-3. Push to `main` (or run the **Deploy to GitHub Pages** workflow manually)
+2. Under **Build and deployment**, set **Source** to **Deploy from a branch**
+3. Choose branch **`gh-pages`** and folder **`/ (root)`**
 
-The workflow in `.github/workflows/deploy.yml` builds the app and publishes `dist/` automatically.
+### Production deploys
+
+Pushes to `main` run `.github/workflows/deploy.yml` and publish the live site.
+
+You can also run **Deploy to GitHub Pages** manually from the Actions tab.
+
+### PR previews
+
+Every pull request automatically deploys a preview to:
+
+`https://<your-username>.github.io/c-calc/preview/pr-<number>/`
+
+The workflow posts (or updates) a comment on the PR with the preview link. When the PR is closed, the preview folder is removed from `gh-pages`.
 
 ## Tests
 
