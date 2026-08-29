@@ -4,6 +4,7 @@ import {
   formatCohortRange,
   getCohortStartYear,
   getEntryYear,
+  parseDateOfBirth,
 } from './schoolEntry'
 
 describe('getCohortStartYear', () => {
@@ -13,6 +14,22 @@ describe('getCohortStartYear', () => {
 
   it('groups August birthdays with the cohort starting the previous September', () => {
     expect(getCohortStartYear(2023, 8)).toBe(2022)
+  })
+})
+
+describe('parseDateOfBirth', () => {
+  it('parses UK typed dates', () => {
+    expect(parseDateOfBirth('29/08/2023')?.getDate()).toBe(29)
+    expect(parseDateOfBirth('29-08-2023')?.getMonth()).toBe(7)
+    expect(parseDateOfBirth('29.08.2023')?.getFullYear()).toBe(2023)
+  })
+
+  it('still parses ISO dates', () => {
+    expect(parseDateOfBirth('2023-08-29')?.getDate()).toBe(29)
+  })
+
+  it('rejects invalid UK dates', () => {
+    expect(parseDateOfBirth('31/02/2023')).toBeNull()
   })
 })
 

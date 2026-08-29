@@ -134,12 +134,31 @@ export function calculateSchoolEntry(
 }
 
 export function parseDateOfBirth(value: string): Date | null {
-  if (!value) return null
+  const trimmed = value.trim()
+  if (!trimmed) return null
 
-  const parts = value.split('-').map(Number)
-  if (parts.length !== 3) return null
+  const isoMatch = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/)
+  if (isoMatch) {
+    return buildValidatedDate(
+      Number(isoMatch[1]),
+      Number(isoMatch[2]),
+      Number(isoMatch[3]),
+    )
+  }
 
-  const [year, month, day] = parts
+  const ukMatch = trimmed.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/)
+  if (ukMatch) {
+    return buildValidatedDate(
+      Number(ukMatch[3]),
+      Number(ukMatch[2]),
+      Number(ukMatch[1]),
+    )
+  }
+
+  return null
+}
+
+function buildValidatedDate(year: number, month: number, day: number): Date | null {
   if (!year || !month || !day) return null
 
   const date = new Date(year, month - 1, day)
@@ -152,6 +171,16 @@ export function parseDateOfBirth(value: string): Date | null {
   }
 
   return date
+}
+
+export function looksLikeCompleteDateInput(value: string): boolean {
+  const trimmed = value.trim()
+  if (!trimmed) return false
+
+  return (
+    /^\d{4}-\d{1,2}-\d{1,2}$/.test(trimmed) ||
+    /^\d{1,2}[/.-]\d{1,2}[/.-]\d{4}$/.test(trimmed)
+  )
 }
 
 export function formatDisplayDate(date: Date): string {

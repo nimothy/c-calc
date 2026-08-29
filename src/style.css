@@ -103,6 +103,26 @@ h2 {
   border-color: #60a5fa;
 }
 
+.dob-input-invalid {
+  border-color: #f87171;
+}
+
+.dob-input-invalid:focus {
+  outline-color: #fca5a5;
+  border-color: #ef4444;
+}
+
+.input-error {
+  margin: 0.55rem 0 0;
+  color: #dc2626;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.input-error.hidden {
+  display: none;
+}
+
 .hint {
   margin: 0.85rem 0 0;
   font-size: 0.95rem;

@@ -3,6 +3,7 @@ import {
   calculateSchoolEntry,
   formatAcademicYear,
   formatDisplayDate,
+  looksLikeCompleteDateInput,
   parseDateOfBirth,
   type SchoolEntryResult,
 } from './schoolEntry'
@@ -23,8 +24,19 @@ app.innerHTML = `
 
     <section class="card input-card">
       <label class="field-label" for="dob">Child&apos;s date of birth</label>
-      <input id="dob" class="dob-input" type="date" />
-      <p class="hint">
+      <input
+        id="dob"
+        class="dob-input"
+        type="text"
+        inputmode="numeric"
+        placeholder="DD/MM/YYYY"
+        autocomplete="bday"
+        spellcheck="false"
+        aria-describedby="dob-hint dob-error"
+      />
+      <p id="dob-error" class="input-error hidden" role="alert"></p>
+      <p id="dob-hint" class="hint">
+        Type the date as <strong>DD/MM/YYYY</strong>, for example <strong>29/08/2023</strong>.
         Example: a child born on 29 August 2023 is in the 2022/23 cohort and enters
         Nursery in September 2026. A child born on 29 September 2023 is in the
         2023/24 cohort and enters Nursery in September 2027.
@@ -46,7 +58,52 @@ app.innerHTML = `
 `
 
 const dobInput = document.querySelector<HTMLInputElement>('#dob')!
+const dobError = document.querySelector<HTMLParagraphElement>('#dob-error')!
 const resultsSection = document.querySelector<HTMLDivElement>('#results')!
+
+function setInputError(message: string): void {
+  if (!message) {
+    dobError.textContent = ''
+    dobError.classList.add('hidden')
+    dobInput.classList.remove('dob-input-invalid')
+    dobInput.removeAttribute('aria-invalid')
+    return
+  }
+
+  dobError.textContent = message
+  dobError.classList.remove('hidden')
+  dobInput.classList.add('dob-input-invalid')
+  dobInput.setAttribute('aria-invalid', 'true')
+}
+
+function updateResults(): void {
+  const value = dobInput.value
+  const date = parseDateOfBirth(value)
+
+  if (!value.trim()) {
+    setInputError('')
+    resultsSection.classList.add('hidden')
+    resultsSection.innerHTML = ''
+    return
+  }
+
+  if (!date && looksLikeCompleteDateInput(value)) {
+    setInputError('Please enter a valid date, for example 29/08/2023.')
+    resultsSection.classList.add('hidden')
+    resultsSection.innerHTML = ''
+    return
+  }
+
+  if (!date) {
+    setInputError('')
+    resultsSection.classList.add('hidden')
+    resultsSection.innerHTML = ''
+    return
+  }
+
+  setInputError('')
+  renderResults(calculateSchoolEntry(date))
+}
 
 function renderResults(result: SchoolEntryResult): void {
   const { nextPointOfEntry, firstPointOfEntry } = result
@@ -139,18 +196,6 @@ function renderResults(result: SchoolEntryResult): void {
       </div>
     </section>
   `
-}
-
-function updateResults(): void {
-  const date = parseDateOfBirth(dobInput.value)
-
-  if (!date) {
-    resultsSection.classList.add('hidden')
-    resultsSection.innerHTML = ''
-    return
-  }
-
-  renderResults(calculateSchoolEntry(date))
 }
 
 dobInput.addEventListener('input', updateResults)
