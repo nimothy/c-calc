@@ -33,6 +33,18 @@ npm run preview
 
 The production build is written to `dist/` and can be hosted on any static file host.
 
+## GitHub Pages
+
+Yes — this app works on GitHub Pages. The Vite config uses `base: '/c-calc/'` so assets load correctly from a project site URL like `https://nimothy.github.io/c-calc/`.
+
+After merging to `main`:
+
+1. Open the repo **Settings → Pages**
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**
+3. Push to `main` (or run the **Deploy to GitHub Pages** workflow manually)
+
+The workflow in `.github/workflows/deploy.yml` builds the app and publishes `dist/` automatically.
+
 ## Tests
 
 ```bash
