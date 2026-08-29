@@ -2,32 +2,32 @@ name: Deploy PR Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
-      pr_number:
-        description: PR number (used in the preview URL path)
-        required: true
-        type: string
       branch:
         description: Branch to build and deploy
         required: true
         type: string
+        default: cursor/school-entry-calculator-feda
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
   pull-requests: write
 
 concurrency:
-  group: preview-${{ github.event.pull_request.number || inputs.pr_number || 'manual' }}
+  group: pages-preview
   cancel-in-progress: true
 
 jobs:
   deploy-preview:
-    if: github.event_name == 'workflow_dispatch' || github.event.action != 'closed'
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     env:
-      PR_NUMBER: ${{ github.event_name == 'workflow_dispatch' && inputs.pr_number || github.event.pull_request.number }}
       DEPLOY_BRANCH: ${{ github.event_name == 'workflow_dispatch' && inputs.branch || github.head_ref }}
     steps:
       - name: Checkout
@@ -46,16 +46,15 @@ jobs:
 
       - name: Build preview
         run: npm run build
-        env:
-          VITE_BASE_PATH: /c-calc/preview/pr-${{ env.PR_NUMBER }}/
 
-      - name: Deploy preview
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          destination_dir: preview/pr-${{ env.PR_NUMBER }}
-          keep_files: true
+          path: dist
+
+      - name: Deploy preview to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Comment preview URL on PR
         if: github.event_name == 'pull_request'
@@ -64,8 +63,8 @@ jobs:
           script: |
             const marker = '<!-- school-entry-preview -->';
             const prNumber = context.payload.pull_request.number;
-            const previewUrl = `https://${context.repo.owner}.github.io/c-calc/preview/pr-${prNumber}/`;
-            const body = `${marker}\n🚀 **Preview deployed**\n\n${previewUrl}\n\n_Updates automatically when you push to this PR branch._`;
+            const previewUrl = 'https://nimothy.github.io/c-calc/';
+            const body = `${marker}\n🚀 **Preview deployed**\n\n${previewUrl}\n\n_This URL shows the latest deployed preview from this PR. It replaces the live site until \`main\` is deployed again._`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -90,28 +89,3 @@ jobs:
                 body,
               });
             }
-
-  cleanup-preview:
-    if: github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout gh-pages
-        id: checkout
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-        continue-on-error: true
-
-      - name: Remove preview folder
-        if: steps.checkout.outcome == 'success'
-        run: |
-          rm -rf "preview/pr-${{ github.event.pull_request.number }}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if git diff --staged --quiet; then
-            echo "No preview folder to remove."
-          else
-            git commit -m "Remove preview for PR #${{ github.event.pull_request.number }}"
-            git push
-          fi
