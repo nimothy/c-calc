@@ -3,15 +3,15 @@
 A simple web app for British school admissions staff and parents. Enter a child's date of birth to see:
 
 - Their academic cohort (1 September – 31 August)
-- Their first point of entry (Reception)
-- The next upcoming entry point from Reception through Year 8
+- Their first point of entry (Pre-nursery)
+- The next upcoming entry point from Pre-nursery through Year 8
 - A full schedule of entry years for every year group
 
 Built with [Vite](https://vitejs.dev/) and TypeScript.
 
 ## How it works
 
-England groups children by academic year running **1 September to 31 August**. Children normally start **Reception** in the **September of the calendar year they turn four**, then progress one year group each September.
+England groups children by academic year running **1 September to 31 August**. Children normally enter **Pre-nursery** in the **September after they turn two**, **Nursery** in the **September they turn three**, and **Reception** in the **September they turn four**, then progress one year group each September.
 
 This matches [GOV.UK guidance on school starting age](https://www.gov.uk/schools-admissions/school-starting-age). Summer-born deferral rules are not included.
 

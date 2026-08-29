@@ -1,4 +1,6 @@
 export type YearGroup =
+  | 'Pre-nursery'
+  | 'Nursery'
   | 'Reception'
   | 'Year 1'
   | 'Year 2'
@@ -10,6 +12,8 @@ export type YearGroup =
   | 'Year 8'
 
 export const YEAR_GROUPS: YearGroup[] = [
+  'Pre-nursery',
+  'Nursery',
   'Reception',
   'Year 1',
   'Year 2',
@@ -64,15 +68,15 @@ export function getCurrentAcademicYearStart(referenceDate: Date = new Date()): n
 }
 
 /**
- * Standard first entry: Reception in the September of the calendar year
- * the child turns four (for example, June 2016 → Reception September 2020).
+ * First standard entry: Pre-nursery in the September of the calendar year
+ * the child turns two. Each subsequent year group is one September later.
  */
-export function getReceptionEntryYear(birthYear: number): number {
-  return birthYear + 4
+export function getFirstEntryYear(birthYear: number): number {
+  return birthYear + 2
 }
 
 export function getEntryYear(birthYear: number, yearGroupIndex: number): number {
-  return getReceptionEntryYear(birthYear) + yearGroupIndex
+  return getFirstEntryYear(birthYear) + yearGroupIndex
 }
 
 export function buildEntryPoint(

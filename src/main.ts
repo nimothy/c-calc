@@ -16,7 +16,7 @@ app.innerHTML = `
       <h1>School entry calculator</h1>
       <p class="intro">
         Enter your child&apos;s date of birth to see their academic cohort and when they
-        can enter from Reception through Year 8. Academic years run from
+        can enter from Pre-nursery through Year 8. Academic years run from
         <strong>1 September</strong> to <strong>31 August</strong>.
       </p>
     </header>
@@ -25,8 +25,8 @@ app.innerHTML = `
       <label class="field-label" for="dob">Child&apos;s date of birth</label>
       <input id="dob" class="dob-input" type="date" />
       <p class="hint">
-        Example: a child born on 15 June 2020 would normally enter Reception in
-        September 2024, then Year 1 in September 2025, and so on.
+        Example: a child born on 15 June 2020 would normally enter Pre-nursery in
+        September 2022, Nursery in September 2023, and Reception in September 2024.
       </p>
     </section>
 
@@ -34,9 +34,10 @@ app.innerHTML = `
 
     <footer class="footer">
       <p>
-        Based on standard England school admissions: children normally start
-        Reception in the September after their fourth birthday, grouped by the
-        September&ndash;August academic year. Summer-born deferral rules are not
+        Based on standard England school admissions: children normally enter
+        Pre-nursery in the September after they turn two, Nursery in the September
+        they turn three, and Reception in the September they turn four, grouped by
+        the September&ndash;August academic year. Summer-born deferral rules are not
         included here.
       </p>
     </footer>
@@ -100,7 +101,7 @@ function renderResults(result: SchoolEntryResult): void {
     </section>
 
     <section class="card">
-      <h2>All entry points (Reception to Year 8)</h2>
+      <h2>All entry points (Pre-nursery to Year 8)</h2>
       <div class="table-wrap">
         <table>
           <thead>
