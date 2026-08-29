@@ -39,20 +39,25 @@ Yes — this app works on GitHub Pages. The Vite config uses `base: '/c-calc/'` 
 
 `https://nimothy.github.io/c-calc/`
 
-### One-time setup
+### One-time setup (required)
 
 1. Open the repo **Settings → Pages**
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**
+2. Under **Build and deployment**, set **Source** to **Deploy from a branch**
+3. Choose branch **`gh-pages`** and folder **`/ (root)`**
+
+> If **Source** is set to **GitHub Actions**, the site will 404 even when deploy workflows succeed. The app is published to the `gh-pages` branch and must be served from there.
 
 ### Production deploys
 
-Pushes to `main` run `.github/workflows/deploy.yml` and publish the live site.
+Pushes to `main` run `.github/workflows/deploy.yml` and update the live site.
 
 ### PR previews
 
-While a PR is open, `.github/workflows/preview-deploy.yml` publishes that branch to the same GitHub Pages URL above. The workflow comments on the PR when the deploy finishes.
+Pull requests deploy to:
 
-> **Note:** PR previews temporarily replace the live site URL. Merge to `main` (or run the production deploy workflow) to restore the production version.
+`https://nimothy.github.io/c-calc/preview/pr-<number>/`
+
+The workflow comments on the PR with the link. Previews are removed when the PR is closed.
 
 ## Tests
 
